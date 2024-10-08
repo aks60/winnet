@@ -24,7 +24,7 @@ public class Crypto extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String action = request.getParameter("secret");
+        String action = request.getParameter("action");
 
         if ("secret".equals(action)) {
             try {
@@ -47,6 +47,7 @@ public class Crypto extends HttpServlet {
                 byte[] decryptMesBytes = decryptCipher.doFinal(decodeMesByte);
                 String decryptMesStr = new String(decryptMesBytes, StandardCharsets.UTF_8); //декодированный
 
+                //Отправить ответ
                 PrintWriter out = response.getWriter();
                 out.println(decryptMesStr);
 
