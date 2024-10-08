@@ -2,6 +2,16 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
+import javax.crypto.Cipher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,9 +28,28 @@ public class Crypto extends HttpServlet {
 
         if ("secret".equals(action)) {
             try {
-                PrintWriter out = response.getWriter();
+                String encodeMesStr = request.getParameter("message").replace(" ", "+");
+                byte[] decodeMesByte = Base64.getDecoder().decode(encodeMesStr);
 
-                out.println("xxxx");
+                //Загрузим файл
+                URL url = Crypto.class.getResource("crypto.key");
+                Path path = Paths.get(url.toURI());
+                byte[] bytes = Files.readAllBytes(path);
+
+                //Получим ключ
+                PKCS8EncodedKeySpec ks = new PKCS8EncodedKeySpec(bytes);
+                KeyFactory kf = KeyFactory.getInstance("RSA");
+                PrivateKey privateKey = kf.generatePrivate(ks);
+
+                //Расшифровывать
+                Cipher decryptCipher = Cipher.getInstance("RSA");
+                decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
+                byte[] decryptMesBytes = decryptCipher.doFinal(decodeMesByte);
+                String decryptMesStr = new String(decryptMesBytes, StandardCharsets.UTF_8); //декодированный
+
+                PrintWriter out = response.getWriter();
+                out.println(decryptMesStr);
+
             } catch (Exception e) {
                 System.out.println("Ошибка: Crypto.processRequest() " + e);
             }
