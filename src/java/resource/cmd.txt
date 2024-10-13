@@ -1,6 +1,11 @@
 //download tar.gzip
 curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.96/bin/apache-tomcat-9.0.96.tar.gz
 
-//Копирование файлов на сервер
-pscp D:/Data/00/tomcat2.service aks@31.172.66.46://etc/systemd/system/tomcat2.service
+//Чтобы отправить файл(ы) на удаленный сервер:
+pscp [опции] источник [источник...] [пользователь@]хост:цель
+pscp D:/Data/00/tomcat.service aks@31.172.66.46://etc/systemd/system/tomcat.service
+
+//Чтобы получить файл(ы) с удаленного сервера:
+pscp [опции] [пользователь@]хост:источник цель
+pscp aks@31.172.66.46:etc/systemd/system/tomcat.service c:\temp\tomcat.service
 
