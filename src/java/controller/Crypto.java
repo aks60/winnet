@@ -32,7 +32,7 @@ public class Crypto extends HttpServlet {
                 byte[] decodeMesByte = Base64.getDecoder().decode(encodeMesStr);
 
                 //Загрузим файл
-                URL url = Crypto.class.getResource("crypto.key");
+                URL url = Crypto.class.getResource("/resource/crypto.key");
                 Path path = Paths.get(url.toURI());
                 byte[] bytes = Files.readAllBytes(path);
 
